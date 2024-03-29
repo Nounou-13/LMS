@@ -15,7 +15,7 @@ import com.libraryapp.DAO.UserRepository;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
-@ActiveProfiles("test") // Utilise le profil de test
+@ActiveProfiles("test") 
 public class UserServiceIntegrationTest {
 
     @Autowired
@@ -26,15 +26,15 @@ public class UserServiceIntegrationTest {
 
     @Test
     public void testFindById() {
-        // Préparation des données
+        
         User user = new User();
         user.setUserName("testUser");
         userRepository.save(user);
 
-        // Exécution du test
+        
         User foundUser = userService.findById(user.getUserId());
 
-        // Vérification des résultats
+        
         assertNotNull(foundUser);
         assertEquals("testUser", foundUser.getUserName());
     }
