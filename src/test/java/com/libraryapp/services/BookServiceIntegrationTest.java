@@ -17,7 +17,7 @@ import java.util.List;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
-@ActiveProfiles("test") // Utilise le profil de test
+@ActiveProfiles("test") 
 public class BookServiceIntegrationTest {
 
     @Autowired
@@ -28,7 +28,7 @@ public class BookServiceIntegrationTest {
 
     @Test
     public void testFindAll() {
-        // Préparation des données
+        
         Book book1 = new Book();
         book1.setTitle("Book 1");
         bookRepository.save(book1);
@@ -37,10 +37,10 @@ public class BookServiceIntegrationTest {
         book2.setTitle("Book 2");
         bookRepository.save(book2);
 
-        // Exécution du test
+        
         List<Book> books = bookService.findAll();
 
-        // Vérification des résultats
+        
         assertNotNull(books);
         assertTrue(books.size() >= 2);
     }
