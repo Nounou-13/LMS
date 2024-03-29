@@ -1,19 +1,13 @@
 package com.libraryapp.rest;
 
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.libraryapp.entities.User;
 import com.libraryapp.services.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/users")
@@ -23,37 +17,61 @@ public class UserRestController {
     private UserService userService;
 
     @GetMapping
-    public List<User> getAllUsers() {
-        return userService.findAll();
+    public ResponseEntity<List<User>> getAllUsers() {
+        List<User> users = userService.findAll();
+        return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
-    @GetMapping("/{id}")
-    public User getUserById(@PathVariable Long id) {
-        return userService.findById(id);
+    @GetMapping("/{userId}")
+    public ResponseEntity<User> getUserByuserId(@PathVariable Long userId) {
+        User user = userService.findById(userId);
+        if (user == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
     @PostMapping
-    public User createUser(@RequestBody User user) {
-        return userService.save(user);
+    public ResponseEntity<User> createUser(@RequestBody User user) {
+        try {
+            User savedUser = userService.save(user);
+            return new ResponseEntity<>(savedUser, HttpStatus.CREATED);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
-    @PutMapping("/{id}")
-    public User updateUser(@PathVariable Long id, @RequestBody User userDetails) {
-        User user = userService.findById(id);
-        user.setUserName(userDetails.getUserName());
-        user.setPassword(userDetails.getPassword());
-        user.setEmail(userDetails.getEmail());
-        user.setFirstName(userDetails.getFirstName());
-        user.setLastName(userDetails.getLastName());
-        user.setAddress(userDetails.getAddress());
-        user.setCity(userDetails.getCity());
-        user.setPhoneNumber(userDetails.getPhoneNumber());
-        // Ajoutez ici d'autres champs si nécessaire
-        return userService.save(user);
+    @PutMapping("/{userId}")
+    public ResponseEntity<User> updateUser(@PathVariable Long userId, @RequestBody User userDetails) {
+        User user = userService.findById(userId);
+        if (user == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        try {
+            user.setUserName(userDetails.getUserName());
+            user.setPassword(userDetails.getPassword()); // Note: Ne pas mettre à jour le mot de passe de cette manière en production
+            user.setEnabled(userDetails.isEnabled());
+            user.setRole(userDetails.getRole());
+            user.setEmail(userDetails.getEmail());
+            user.setFirstName(userDetails.getFirstName());
+            user.setLastName(userDetails.getLastName());
+            user.setAddress(userDetails.getAddress());
+            user.setCity(userDetails.getCity());
+            user.setPhoneNumber(userDetails.getPhoneNumber());
+            User updatedUser = userService.save(user);
+            return new ResponseEntity<>(updatedUser, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
-    @DeleteMapping("/{id}")
-    public void deleteUser(@PathVariable Long id) {
-        userService.deleteById(id);
+    @DeleteMapping("/{userId}")
+    public ResponseEntity<?> deleteUser(@PathVariable Long userId) {
+        try {
+            userService.deleteById(userId);
+            return new ResponseEntity<>("Utilisateur supprimé avec succès", HttpStatus.NO_CONTENT);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Erreur lors de la suppression de l'utilisateur", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }

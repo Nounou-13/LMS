@@ -11,6 +11,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Column;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 
 @Entity
 @Table(name="books")
@@ -32,10 +35,12 @@ public class Book {
 	@Column(name="readyForPickUp")
 	private boolean readyForPickUp = false;
 
+	@JsonBackReference
 	@ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH},
 			fetch = FetchType.LAZY)
 	private User reservedByUser;
 
+	@JsonManagedReference
 	@ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH},
 			fetch = FetchType.LAZY)
 	private User theUser;

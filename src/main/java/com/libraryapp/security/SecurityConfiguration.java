@@ -30,7 +30,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		
+		http.cors().and();
 		http.authorizeRequests()
 		.antMatchers("/user/**").hasRole("USER")
 		.antMatchers("/employee/**").hasRole("EMPLOYEE")
@@ -40,10 +40,12 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 		.antMatchers("/logout/**").permitAll()
 		.antMatchers("/CSS/**").permitAll()
 		.antMatchers("/Images/**").permitAll()
-				.antMatchers("/api/**").permitAll()
+				.antMatchers("/api/books/**").permitAll()
+				.antMatchers("/api/users/**").permitAll()
+				.antMatchers("/api/notifications/**").permitAll()
 		.antMatchers("/**").authenticated().and().formLogin().loginPage("/login");
 
-		http.csrf().ignoringAntMatchers("/h2-console/**");
+		http.csrf().disable();
 		http.headers().frameOptions().disable();
 	}
 	

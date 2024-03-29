@@ -11,6 +11,9 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 
 @Entity
 @Table(name="users")
@@ -33,9 +36,11 @@ public class User {
 	private String city;
 	private String phoneNumber;
 
+	@JsonManagedReference
 	@OneToMany(mappedBy="reservedByUser")
 	private List<Book> reservedBooks;
-	
+
+	@JsonBackReference
 	@OneToMany(mappedBy="theUser")
 	private List<Book> books;
 	

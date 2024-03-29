@@ -1,19 +1,13 @@
 package com.libraryapp.rest;
 
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.libraryapp.entities.Book;
 import com.libraryapp.services.BookService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/books")
@@ -23,33 +17,63 @@ public class BookController {
     private BookService bookService;
 
     @GetMapping
-    public List<Book> getAllBooks() {
-        return bookService.findAll();
+    public ResponseEntity<List<Book>> listeLivres() {
+        List<Book> livres = bookService.findAll();
+        return new ResponseEntity<>(livres, HttpStatus.OK);
     }
 
-    @GetMapping("/{id}")
-    public Book getBookById(@PathVariable Long id) {
-        return bookService.findById(id);
+    @PostMapping("/add")
+    public ResponseEntity<?> addLivre(@RequestBody Book livre) {
+        try {
+            bookService.save(livre);
+            return new ResponseEntity<>("Livre créé avec succès", HttpStatus.CREATED);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Erreur lors de la création du livre", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
-    @PostMapping
-    public Book createBook(@RequestBody Book book) {
-        return bookService.save(book);
+    @GetMapping("/{bookId}")
+    public ResponseEntity<Book> getLivre(@PathVariable Long bookId) {
+        Book livre = bookService.findById(bookId);
+        if (livre == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(livre, HttpStatus.OK);
     }
 
-    @PutMapping("/{id}")
-    public Book updateBook(@PathVariable Long id, @RequestBody Book bookDetails) {
-        Book book = bookService.findById(id);
-        book.setTitle(bookDetails.getTitle());
-        book.setAuthor(bookDetails.getAuthor());
-        book.setReleaseYear(bookDetails.getReleaseYear());
-        book.setEdition(bookDetails.getEdition());
-        // Ajoutez ici d'autres champs si nécessaire
-        return bookService.save(book);
+    @PutMapping("/edit/{bookId}")
+    public ResponseEntity<?> editLivre(@PathVariable Long bookId, @RequestBody Book livre) {
+        Book existingLivre = bookService.findById(bookId);
+        if (existingLivre == null) {
+            return new ResponseEntity<>("Livre non trouvé", HttpStatus.NOT_FOUND);
+        }
+        try {
+            existingLivre.setTitle(livre.getTitle());
+            existingLivre.setAuthor(livre.getAuthor());
+            existingLivre.setReleaseYear(livre.getReleaseYear());
+            existingLivre.setEdition(livre.getEdition());
+            existingLivre.setReturnDate(livre.getReturnDate());
+            existingLivre.setStartReservationDate(livre.getStartReservationDate());
+            existingLivre.setEndReservationDate(livre.getEndReservationDate());
+            existingLivre.setTimesExtended(livre.getTimesExtended());
+            existingLivre.setReadyForPickup(livre.getReadyForPickUp());
+            existingLivre.setReservedByUser(livre.getReservedByUser());
+            existingLivre.setTheUser(livre.getTheUser());
+
+            Book updatedLivre = bookService.save(existingLivre);
+            return new ResponseEntity<>(updatedLivre, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Erreur lors de la mise à jour du livre", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
-    @DeleteMapping("/{id}")
-    public void deleteBook(@PathVariable Long id) {
-        bookService.deleteById(id);
+    @DeleteMapping("/delete/{bookId}")
+    public ResponseEntity<?> deleteLivre(@PathVariable Long bookId) {
+        Book livre = bookService.findById(bookId);
+        if (livre == null) {
+            return new ResponseEntity<>("Livre non trouvé", HttpStatus.NOT_FOUND);
+        }
+        bookService.deleteById(bookId);
+        return new ResponseEntity<>("Livre supprimé avec succès", HttpStatus.NO_CONTENT);
     }
 }
