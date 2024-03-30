@@ -17,7 +17,7 @@ import java.util.List;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
-@ActiveProfiles("test") // Utilise le profil de test
+@ActiveProfiles("test") 
 public class GetByFirstNameIntegrationTest {
 
     @Autowired
@@ -28,21 +28,21 @@ public class GetByFirstNameIntegrationTest {
 
     @Test
     public void testGetByFirstName() {
-        // Préparation des données
+        
         User user1 = new User();
-        user1.setFirstName("John");
+        user1.setFirstName("Nouredine");
         userRepository.save(user1);
 
         User user2 = new User();
-        user2.setFirstName("Jane");
+        user2.setFirstName("Dicko");
         userRepository.save(user2);
 
-        // Exécution du test
-        List<User> users = userService.getByFirstName("John");
+        
+        List<User> users = userService.getByFirstName("Nouredine");
 
-        // Vérification des résultats
+        
         assertNotNull(users);
         assertTrue(users.size() >= 1);
-        assertTrue(users.stream().anyMatch(user -> user.getFirstName().equalsIgnoreCase("John")));
+        assertTrue(users.stream().anyMatch(user -> user.getFirstName().equalsIgnoreCase("Nouredine")));
     }
 }
