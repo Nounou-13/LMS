@@ -52,9 +52,12 @@ public class LibraryApplication {
 			User user3 = new User("user", pwEncoder.encode("test"), "Hawa@gmail.com", "Hawa", "Maiga", "Leidijk 97", "06-18756892", "Niger");
 			user3.setRole("ROLE_USER");
 
-			User user4 = new User("aniemies", pwEncoder.encode("test"), "annemie.schuurbiers@gmail.com", "Annemie", "Schuurbiers", "Duinerlaan 173", "06-83472443", "Eelde");
-			User user5 = new User("seppe", pwEncoder.encode("test"), "seppe.bruinink@gmail.com", "Seppe", "Bruinink", "Gangboord 90", "06-13644621", "Oosterhout");
-			User user6 = new User("beukenplein", pwEncoder.encode("test"), "m.snel@gmail.com", "Mikael", "Snel", "Onderkampstraat 30", "06-90982738", "Susteren");
+			User user4 = new User("nour", pwEncoder.encode("test"), "annemie.schuurbiers@gmail.com", "nour", "Schuurbiers", "Duinerlaan 173", "06-83472443", "Eelde");
+			user1.setRole("ROLE_ADMIN");
+			User user5 = new User("noura", pwEncoder.encode("test"), "seppe.bruinink@gmail.com", "noura", "Bruinink", "Gangboord 90", "06-13644621", "Oosterhout");
+			user2.setRole("ROLE_EMPLOYEE");
+			User user6 = new User("rabane", pwEncoder.encode("test"), "m.snel@gmail.com", "rabane", "Snel", "Onderkampstraat 30", "06-90982738", "Susteren");
+			user3.setRole("ROLE_USER");
 			User user7 = new User("bookwurm", pwEncoder.encode("test"), "bookwurm@gmail.com", "Martina", "Jansen", "Nieuweweg 200", "06-00492182", "Burgum");
 			User user8 = new User("daniela45", pwEncoder.encode("test"), "d.peerdeman@gmail.com", "Daniela", "Peerdeman", "Beukenkamp 84", "06-88720394", "Hoogezand");
 			User user9 = new User("blackandyellow", pwEncoder.encode("test"), "simons@gmail.com", "Gert", "Simons", "Het Kanaal 170", "06-18392031", "Heerlen");
